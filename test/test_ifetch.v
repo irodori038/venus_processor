@@ -55,12 +55,15 @@ module test_ifetch();
     # (STEP * 4);
 
     rst = 1'b1;   // reset disable
-    for (i = 1; i <= 20; i = i + 1) begin
-      if (i % 5 == 0) begin
-        stall = 1'b1;
-        #(STEP*2);
-      end
-      else stall = 1'b0;
+    for (i = 1; i <= 5; i = i + 1) begin
+      #(STEP);
+    end
+    branch_addr = 16'h0009;
+    branch = 1'b1;
+    stall = 1'b1;
+    #(STEP);
+    #(STEP);
+    for (i = 7; i <= 10; i = i + 1) begin
       #(STEP);
     end
     $finish;
