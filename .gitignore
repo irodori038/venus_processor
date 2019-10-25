@@ -4,4 +4,6 @@ simv.daidir/
 ucli.key
 DVEfiles/
 *.vpd
+*.vcd
 a.out
+*.DS_Store
