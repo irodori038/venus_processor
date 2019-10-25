@@ -43,6 +43,8 @@ module test_ifetch();
 
 
   initial begin
+    $dumpfile("test_ifetch.vcd");
+    $dumpvars(0, test_ifetch);
     i = 0;
     clk = 1'b0;
     rst = 1'b0;
@@ -54,7 +56,10 @@ module test_ifetch();
 
     rst = 1'b1;   // reset disable
     for (i = 1; i <= 20; i = i + 1) begin
-      if (i % 5 == 0) stall = 1'b1;
+      if (i % 5 == 0) begin
+        stall = 1'b1;
+        #(STEP*2);
+      end
       else stall = 1'b0;
       #(STEP);
     end
@@ -64,7 +69,7 @@ module test_ifetch();
   always @(posedge clk)
   begin
     $display("##### cycle %h #############", i);
-    $display("RST\tPC\tINST\t\tSTALL\tBRANCH");
-    $display("%b\t%h\t%h\t%b\t%b", rst, inst_addr_o_ifetch0, inst_o_ifetch0, stall, branch);
+    $display("RST\tPC\tADDR\tINST\t\tSTALL\tBRANCH");
+    $display("%b\t%h\t%h\t%h\t%b\t%b", rst, ifetch0.pc, ifetch0.addr_r, inst_o_ifetch0, stall, branch);
   end
 endmodule
