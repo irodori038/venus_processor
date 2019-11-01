@@ -5,9 +5,14 @@ module ID (
   stall_o
 );
 
+  parameter W_DOPC  = 9;    // decoded opecode width
+  parameter W_INST  = 32;   // instruction width
+  parameter P_RD    = 20;   // position of register
+  parameter W_OPC   = 7;    // opecode width
+
   wire [W_DOPC-1:0] dopc; // decoded opecode
 
-  assign            dopc    = decode_ins(inst_i[W_INST-2:P_RD]);
+  assign            dopc    = decode_ins(inst_i[W_INST-1:W_INST-W_OPC]);
 
   assign            inte    = dopc[W_DOPC-1]; // integer
   assign            logic   = dopc[W_DOPC-1]; // logic
