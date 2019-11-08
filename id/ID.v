@@ -15,14 +15,14 @@ module ID (
   assign            dopc    = decode_ins(inst_i[W_INST-1:W_INST-W_OPC]);
 
   assign            inte    = dopc[W_DOPC-1]; // integer
-  assign            logic   = dopc[W_DOPC-1]; // logic
-  assign            shift   = dopc[W_DOPC-1]; // shift
-  assign            ld      = dopc[W_DOPC-1]; // load
-  assign            st      = dopc[W_DOPC-1]; // store
-  assign            br      = dopc[W_DOPC-1]; // branch
-  assign            imme16  = dopc[W_DOPC-1]; // immediate 16
-  assign            rsv_o   = dopc[W_DOPC-1]; // reserve
-  assign            und     = dopc[W_DOPC-1]; // undefined
+  assign            logic   = dopc[W_DOPC-2]; // logic
+  assign            shift   = dopc[W_DOPC-3]; // shift
+  assign            ld      = dopc[W_DOPC-4]; // load
+  assign            st      = dopc[W_DOPC-5]; // store
+  assign            br      = dopc[W_DOPC-6]; // branch
+  assign            imme16  = dopc[W_DOPC-7]; // immediate 16
+  assign            rsv_o   = dopc[W_DOPC-8]; // reserve
+  assign            und     = dopc[W_DOPC-9]; // undefined
 
   // **************** decode opecode *****************
     // dopc = {inte, logic, shift, ls, br, imm16, rsv, und}
@@ -41,12 +41,12 @@ module ID (
         7'b0000_111: decode_ins = 11'b100000_0_1_0;
 
         // shift reg - reg
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
-        7'b000_1000: decode_ins = 11'b001000_0_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
+        7'b000_1000: decode_ins = 11'b001000_1_1_0;
         
         // logic reg - reg
         7'b00_10000: decode_ins = 11'b010000_0_1_0;

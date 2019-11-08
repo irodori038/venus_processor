@@ -3,7 +3,7 @@ function [31:0] extend_sign;
   input [15:0] value;
 
   if (en_extend)
-    extend_sign = {16{value[15]}, value};
+    extend_sign = {{16{value[15]}}, value};
   else
     extend_sign = {16'b0, value};
 
