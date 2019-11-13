@@ -1,5 +1,3 @@
-`include "../include/params.v"
-
 module register_cell (
   clk,
   rst,
@@ -9,6 +7,8 @@ module register_cell (
   w_reserve_o,
   wb_i
 );
+
+  `include "../include/params.v"
 
   input               clk, rst;     
   input [W_OPR-1:0]   data_i;       // data for write
