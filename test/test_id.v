@@ -3,7 +3,7 @@
 
 module test_ifetch();
   parameter STEP = 10;
-  integer i;
+  integer i, loop;
 
   reg clk;
   always begin
@@ -20,12 +20,16 @@ module test_ifetch();
   reg [3:0] rd;
   reg [3:0] rs;
   reg [15:0] imm;
+  reg [31:0] inst_r;
+  reg [31:0] imm_r;
 
   wire [31:0] inst;
   assign inst = {opecode, immf, rd, rs, imm};
 
-  wire [31:0] opr0_value;
-  wire [31:0] opr1_value;
+  wire [31:0] rd_value;
+  wire [31:0] rs_value;
+  wire [31:0] imm_value;
+  wire immf_o_id;
   wire stall_o;
   wire inte;
   wire logic;
@@ -34,12 +38,15 @@ module test_ifetch();
   wire st;
   wire br;
 
+
   ID idecode (
     .clk(clk),
     .rst(rst),
     .inst_i(inst),
-    .opr0_value_o(opr0_value),
-    .opr1_value_o(opr1_value),
+    .rd_value_o(rd_value),
+    .rs_value_o(rs_value),
+    .imm_value_o(imm_value),
+    .immf_o(immf_o_id),
     .stall_i(stall),
     .stall_o(stall_o),
     .ctrl_inte_o(inte),
@@ -59,16 +66,34 @@ module test_ifetch();
     i = 0;
     opecode = 7'b000_0000;
     immf = 1'b0;
-    rd = 4'h1;
+    rd = 4'h0;
     rs = 4'h0;
     imm = 16'h0;
-    #(STEP * 3)
+    #(1.0);
+    #(STEP * 2);
+    rst = 1'b1;
+    #(STEP * 3);
+    for (loop = 0; loop <= 30; loop = loop + 1) begin
+      opecode = opecode + 7'b1;
+      imm = $random(clk);
+      #(STEP);
+    end
     $finish;
   end
 
   always @(posedge clk) begin
     $display("############# cycle %h ################", i);
-    $display("ctrl line");
+    $display("RST: %b", rst);
+    $display("IN LO SH LD ST BR IM");
+    $display("%b  %b  %b  %b  %b  %b  %b", inte, logic, shift, ld, st, br, immf_o_id);
+    $display("ins: %b %b %h %h %h", inst_r[31:25], inst_r[24], inst_r[23:20], inst_r[19:16], inst_r[15:0]);
+    $display("src: %h (addr: %h)", rs_value, idecode.rs_addr);
+    $display("dst: %h (addr: %h)", rd_value, idecode.rd_addr);
+    $display("imm: %h", imm_value);
+    $display("stl: %b", stall_o);
+    inst_r <= inst;
+    imm_r <= imm;
+    i = i + 1;
   end
   
 endmodule
