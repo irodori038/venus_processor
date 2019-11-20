@@ -69,13 +69,17 @@ module test_ifetch();
     rd = 4'h0;
     rs = 4'h0;
     imm = 16'h0;
+    stall = 1'b0;
     #(1.0);
     #(STEP * 2);
     rst = 1'b1;
     #(STEP * 3);
-    for (loop = 0; loop <= 30; loop = loop + 1) begin
+    for (loop = 0; loop <= 31; loop = loop + 1) begin
       opecode = opecode + 7'b1;
+      immf = $random(clk);
       imm = $random(clk);
+      rd = $random(clk);
+      rs = $random(clk);
       #(STEP);
     end
     $finish;
@@ -86,9 +90,9 @@ module test_ifetch();
     $display("RST: %b", rst);
     $display("IN LO SH LD ST BR IM");
     $display("%b  %b  %b  %b  %b  %b  %b", inte, logic, shift, ld, st, br, immf_o_id);
-    $display("ins: %b %b %h %h %h", inst_r[31:25], inst_r[24], inst_r[23:20], inst_r[19:16], inst_r[15:0]);
-    $display("src: %h (addr: %h)", rs_value, idecode.rs_addr);
-    $display("dst: %h (addr: %h)", rd_value, idecode.rd_addr);
+    $display("ins: %b %b %h %h %h (No.%d)", inst_r[31:25], inst_r[24], inst_r[23:20], inst_r[19:16], inst_r[15:0], inst_r[31:25]);
+    $display("src: %h", rs_value);
+    $display("dst: %h", rd_value);
     $display("imm: %h", imm_value);
     $display("stl: %b", stall_o);
     inst_r <= inst;

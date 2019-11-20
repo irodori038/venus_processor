@@ -109,7 +109,7 @@ module ID (
         7'b00_11110: decode_ins = 9'b000001_0_1_0;
         7'b00_11111: decode_ins = 9'b000001_0_1_0;
 
-        default:     decode_ins = 9'b000000_0_0_0;
+        default:     decode_ins = 9'b000000_0_0_1;
       endcase
     endfunction
 
@@ -136,7 +136,7 @@ module ID (
 
 
   // *************** stall logic ********************
-  assign stall_o = reserved_o_register;
+  assign stall_o = stall_i | reserved_o_register | und;
 
   // **************** decode immediate ****************
   `include "../id/SignEx.v" 
@@ -173,7 +173,7 @@ module ID (
       immf_r       <= 1'b0;
       imm_r        <= 32'b0;
     end
-    else if (stall_i) begin
+    else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
       ctrl_logic_r <= ctrl_logic_r;
       ctrl_shift_r <= ctrl_shift_r;
