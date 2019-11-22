@@ -19,9 +19,9 @@ module test_adder();
   );
 
   initial begin
-    for (i = 0; i <= 10; i = i + 1)
+    for (i = 0; i <= 1000; i = i + 1)
       check_add();
-    for (i = 0; i <= 10; i = i + 1)
+    for (i = 0; i <= 1000; i = i + 1)
       check_minus();
     $finish;
   end
@@ -33,10 +33,13 @@ module test_adder();
       opr1 <= $random(random_tmp);
       minus <= 1'b0;
       #(STEP);
-      if (result == opr0 + opr1)
-        $display("%d + %d = %d", opr0, opr1, result);
-      else
-        $display("%d + %d != %d", opr0, opr1, result);
+      if (result[31:0] !== opr0 + opr1) begin
+        $display("######## Wrong Answer (plus) ##########");
+        $display("opr0: %d (%b)", opr0, opr0);
+        $display("opr1: %d (%b)", opr1, opr1);
+        $display("expc: %d (%b)", opr0+opr1, opr0+opr1);
+        $display("rslt: %d (%b)", result[31:0], result[31:0]);
+      end
     end
   endtask
 
@@ -46,11 +49,13 @@ module test_adder();
       opr1 <= $random(random_tmp);
       minus <= 1'b1;
       #(STEP);
-      if (result == opr0 - opr1)
-        $display(opr0, " - ",  opr1, " = ", result);
-      else
-        $display(opr0, " - ",  opr1, " != ", result);
-        $display("ans: ", opr0, " - ",  opr1, " != ", opr0 - opr1);
+      if (result[31:0] !== opr0 - opr1) begin
+        $display("######## Wrong Answer (minus) ##########");
+        $display("opr0: %d (%b)", opr0, opr0);
+        $display("opr1: %d (%b)", opr1, opr1);
+        $display("expc: %d (%b)", opr0-opr1, opr0-opr1);
+        $display("rslt: %d (%b)", result[31:0], result[31:0]);
+      end
     end
   endtask
 endmodule
