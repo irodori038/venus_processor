@@ -1,15 +1,15 @@
 # Begin_DVE_Session_Save_Info
 # DVE restart session
-# Saved on Fri Nov 22 17:55:52 2019
+# Saved on Tue Nov 26 16:56:17 2019
 # Designs open: 1
 #   Sim: /home/rynak/jikken/processor/test/simv
 # Toplevel windows open: 2
 # 	TopLevel.1
 # 	TopLevel.2
-#   Source.1: test_ifetch
-#   Wave.1: 10 signals
+#   Source.1: test_ifetch.idecode
+#   Wave.1: 7 signals
 #   Group count = 1
-#   Group Group1 signal count = 10
+#   Group Group1 signal count = 7
 # End_DVE_Session_Save_Info
 
 # DVE version: I-2014.03
@@ -59,7 +59,7 @@ gui_sync_global -id ${TopLevel.2} -option true
 
 # MDI window settings
 set Wave.1 Wave.1
-gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 296} {child_wave_right 721} {child_wave_colname 146} {child_wave_colvalue 146} {child_wave_col1 0} {child_wave_col2 1}}
+gui_update_layout -id ${Wave.1} {{show_state maximized} {dock_state undocked} {dock_on_new_line false} {child_wave_left 295} {child_wave_right 720} {child_wave_colname 145} {child_wave_colvalue 146} {child_wave_col1 0} {child_wave_col2 1}}
 
 # End MDI window settings
 
@@ -86,13 +86,14 @@ gui_set_time_units 100ps
 # Global: Signal Compare
 
 # Global: Signal Groups
+gui_load_child_values {test_ifetch.idecode.register}
 
 
-set _session_group_1 Group1
-gui_sg_create "$_session_group_1"
-set Group1 "$_session_group_1"
+set _session_group_3 Group1
+gui_sg_create "$_session_group_3"
+set Group1 "$_session_group_3"
 
-gui_sg_addsignal -group "$_session_group_1" { test_ifetch.idecode.register.w_reserve_i test_ifetch.idecode.register.r0_i test_ifetch.idecode.register.r1_i test_ifetch.idecode.register.r_opr0_o test_ifetch.idecode.register.r_opr1_o test_ifetch.idecode.register.reserved_o test_ifetch.idecode.register.wb_i test_ifetch.idecode.register.wb_r_i test_ifetch.idecode.register.result_i test_ifetch.idecode.register.clk }
+gui_sg_addsignal -group "$_session_group_3" { test_ifetch.idecode.stall_o test_ifetch.idecode.clk test_ifetch.idecode.stall_i test_ifetch.idecode.reserved_o_register test_ifetch.idecode.register.w_reserved test_ifetch.idecode.register.r0.w_res test_ifetch.idecode.inst_i }
 
 # Global: Highlighting
 
@@ -102,7 +103,7 @@ gui_change_stack_mode -mode list
 # Post database loading setting...
 
 # Restore C1 time
-gui_set_time -C1_only 3710
+gui_set_time -C1_only 3910
 
 
 
@@ -127,17 +128,16 @@ gui_list_set_filter -id ${Hier.1} -list { {Package 1} {All 0} {Process 1} {VirtP
 gui_list_set_filter -id ${Hier.1} -text {*}
 gui_change_design -id ${Hier.1} -design Sim
 catch {gui_list_expand -id ${Hier.1} test_ifetch}
-catch {gui_list_expand -id ${Hier.1} test_ifetch.idecode}
-catch {gui_list_select -id ${Hier.1} {test_ifetch.idecode.register}}
+catch {gui_list_select -id ${Hier.1} {test_ifetch.idecode}}
 gui_view_scroll -id ${Hier.1} -vertical -set 0
 gui_view_scroll -id ${Hier.1} -horizontal -set 0
 
 # Data 'Data.1'
 gui_list_set_filter -id ${Data.1} -list { {Buffer 1} {Input 1} {Others 1} {Linkage 1} {Output 1} {LowPower 1} {Parameter 1} {All 1} {Aggregate 1} {LibBaseMember 1} {Event 1} {Assertion 1} {Constant 1} {Interface 1} {BaseMembers 1} {Signal 1} {$unit 1} {Inout 1} {Variable 1} }
 gui_list_set_filter -id ${Data.1} -text {*}
-gui_list_show_data -id ${Data.1} {test_ifetch.idecode.register}
+gui_list_show_data -id ${Data.1} {test_ifetch.idecode}
 gui_show_window -window ${Data.1}
-catch { gui_list_select -id ${Data.1} {test_ifetch.idecode.register.clk }}
+catch { gui_list_select -id ${Data.1} {test_ifetch.idecode.inst_i }}
 gui_view_scroll -id ${Data.1} -vertical -set 0
 gui_view_scroll -id ${Data.1} -horizontal -set 0
 gui_view_scroll -id ${Hier.1} -vertical -set 0
@@ -146,8 +146,8 @@ gui_view_scroll -id ${Hier.1} -horizontal -set 0
 # Source 'Source.1'
 gui_src_value_annotate -id ${Source.1} -switch false
 gui_set_env TOGGLE::VALUEANNOTATE 0
-gui_open_source -id ${Source.1}  -replace -active test_ifetch /home/rynak/jikken/processor/test/test_id.v
-gui_view_scroll -id ${Source.1} -vertical -set 36
+gui_open_source -id ${Source.1}  -replace -active test_ifetch.idecode /home/rynak/jikken/processor/test/../id/ID.v
+gui_view_scroll -id ${Source.1} -vertical -set 24
 gui_src_set_reusable -id ${Source.1}
 
 # View 'Wave.1'
@@ -158,7 +158,7 @@ set origWaveHeight [gui_get_pref_value -category Wave -key waveRowHeight]
 gui_list_set_height -id Wave -height 25
 set origGroupCreationState [gui_list_create_group_when_add -wave]
 gui_list_create_group_when_add -wave -disable
-gui_wv_zoom_timerange -id ${Wave.1} 0 1857
+gui_wv_zoom_timerange -id ${Wave.1} 0 1873
 gui_list_add_group -id ${Wave.1} -after {New Group} {Group1}
 gui_seek_criteria -id ${Wave.1} {Any Edge}
 
@@ -177,7 +177,7 @@ gui_list_set_filter -id ${Wave.1} -list { {Buffer 1} {Input 1} {Others 1} {Linka
 gui_list_set_filter -id ${Wave.1} -text {*}
 gui_list_set_insertion_bar  -id ${Wave.1} -group Group1  -position in
 
-gui_marker_move -id ${Wave.1} {C1} 3710
+gui_marker_move -id ${Wave.1} {C1} 3910
 gui_view_scroll -id ${Wave.1} -vertical -set 0
 gui_show_grid -id ${Wave.1} -enable false
 # Restore toplevel window zorder

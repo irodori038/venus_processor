@@ -119,6 +119,8 @@ module ID (
   wire reserved_o_register;
   assign rd_addr = inst_i[23:20];
   assign rs_addr = inst_i[19:16];
+  wire [31:0] r_opr0_o_register;
+  wire [31:0] r_opr1_o_register;
   
   g_register register (
     .clk(clk),
@@ -126,8 +128,8 @@ module ID (
     .w_reserve_i(rsv_o),
     .r0_i(rd_addr),
     .r1_i(rs_addr),
-    .r_opr0_o(rd_value_o),
-    .r_opr1_o(rs_value_o),
+    .r_opr0_o(r_opr0_o_register),
+    .r_opr1_o(r_opr1_o_register),
     .reserved_o(reserved_o_register),
     .wb_i(wb_i),
     .wb_r_i(wb_r_i),
@@ -136,7 +138,7 @@ module ID (
 
 
   // *************** stall logic ********************
-  assign stall_o = stall_i | reserved_o_register | und;
+  assign stall_o = stall_i | reserved_o_register;
 
   // **************** decode immediate ****************
   `include "../id/SignEx.v" 
@@ -150,8 +152,11 @@ module ID (
   reg ctrl_ld_r;
   reg ctrl_st_r;
   reg ctrl_br_r;
+  reg [31:0] rd_value_r;
+  reg [31:0] rs_value_r;
   reg immf_r;
   reg [31:0] imm_r;
+  reg stall_r;
 
   assign ctrl_inte_o  = ctrl_inte_r;
   assign ctrl_logic_o = ctrl_logic_r;
@@ -159,8 +164,11 @@ module ID (
   assign ctrl_ld_o    = ctrl_ld_r;
   assign ctrl_st_o    = ctrl_st_r;
   assign ctrl_br_o    = ctrl_br_r;
+  assign rd_value_o   = rd_value_r;
+  assign rs_value_o   = rs_value_r;
   assign immf_o       = immf_r;
   assign imm_value_o  = imm_r;
+  assign stall_o      = stall_r;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
@@ -170,8 +178,11 @@ module ID (
       ctrl_ld_r    <= 1'b0;
       ctrl_st_r    <= 1'b0;
       ctrl_br_r    <= 1'b0;
+      rd_value_r   <= 32'h0;
+      rs_value_r   <= 32'h0;
       immf_r       <= 1'b0;
       imm_r        <= 32'b0;
+      stall_r      <= 1'b0;
     end
     else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
@@ -180,8 +191,11 @@ module ID (
       ctrl_ld_r    <= ctrl_ld_r;
       ctrl_st_r    <= ctrl_st_r;
       ctrl_br_r    <= ctrl_br_r;
+      rd_value_r   <= rd_value_r;
+      rs_value_r   <= rs_value_r;
       immf_r       <= immf_r;
       imm_r        <= imm_r;
+      stall_r      <= stall_r;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -190,8 +204,11 @@ module ID (
       ctrl_ld_r    <= ld;
       ctrl_st_r    <= st;
       ctrl_br_r    <= br;
+      rd_value_r   <= r_opr0_o_register;
+      rs_value_r   <= r_opr1_o_register;
       immf_r       <= inst_i[24];
       imm_r        <= dimm;
+      stall_r      <= stall_i | reserved_o_register;
     end
   end
 
