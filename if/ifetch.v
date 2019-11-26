@@ -5,7 +5,8 @@ module ifetch(clk,
               branch_addr_i,
               stall_i,
               inst_o,
-              inst_addr_o
+              inst_addr_o,
+              pc_value_o
               );
 
   parameter ADDR = 16;
@@ -19,6 +20,7 @@ module ifetch(clk,
   input           stall_i;        // stall input (if H then stall)
   output [WORD-1:0] inst_o;         // instruction to the next stage
   output [ADDR-1:0] inst_addr_o;    // instruction addr to memory
+  output [ADDR-1:0] pc_value_o;
 
 
   // pipeline registers
@@ -34,6 +36,7 @@ module ifetch(clk,
   assign pc_plus1 = addr_r + 16'h0001;
   assign next_pc = branch_i ? branch_addr_i : pc_plus1;
   assign inst_addr_o = addr_r;
+  assign pc_value_o = pc;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin

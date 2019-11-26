@@ -1,4 +1,4 @@
-module EX (
+module execute (
   clk,
   rst,
   rd_value_i,

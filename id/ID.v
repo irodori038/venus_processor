@@ -18,7 +18,9 @@ module ID (
   ctrl_br_o,
   wb_r_i,
   wb_i,
-  wb_data_i
+  wb_data_i,
+  pc_value_i,
+  pc_value_o
 );
 
   parameter W_DOPC  = 9;    // decoded opecode width
@@ -31,6 +33,7 @@ module ID (
   input wb_i;               // write-back flag from the WB stage (1: WB enable)
   input [3:0] wb_r_i;       // write-back target register address
   input [31:0] wb_data_i;   // write-back data
+  input [15:0] pc_value_i;
 
   // control bits (1: use this module)
   output ctrl_inte_o;       // control (integer)
@@ -157,6 +160,7 @@ module ID (
   reg immf_r;
   reg [31:0] imm_r;
   reg stall_r;
+  reg [15:0] pc_value_r;
 
   assign ctrl_inte_o  = ctrl_inte_r;
   assign ctrl_logic_o = ctrl_logic_r;
@@ -169,6 +173,7 @@ module ID (
   assign immf_o       = immf_r;
   assign imm_value_o  = imm_r;
   assign stall_o      = stall_r;
+  assign pc_value_o   = pc_value_r;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
@@ -183,6 +188,7 @@ module ID (
       immf_r       <= 1'b0;
       imm_r        <= 32'b0;
       stall_r      <= 1'b0;
+      pc_value_r   <= 16'h0;
     end
     else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
@@ -196,6 +202,7 @@ module ID (
       immf_r       <= immf_r;
       imm_r        <= imm_r;
       stall_r      <= stall_r;
+      pc_value_r   <= pc_value_r;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -209,6 +216,7 @@ module ID (
       immf_r       <= inst_i[24];
       imm_r        <= dimm;
       stall_r      <= stall_i | reserved_o_register;
+      pc_value_r   <= pc_value_i;
     end
   end
 

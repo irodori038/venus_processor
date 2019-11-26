@@ -1,6 +1,6 @@
 `include "../mem/DP_mem32x64k.v"
 
-module load (
+module load_store (
   input         clk,
   input [31:0]  base,     // base address
   input [31:0]  offset,   // offset address
@@ -9,13 +9,16 @@ module load (
   output [31:0] result    // result from memory
 );
 
-  wire [31:0] address;
+  wire [32:0] address;
+  assign address = base + offset;
 
 
   DP_mem32x64k data_mem (
     .clk(clk),
-    .A(base + offset),
+    .A(address[31:0]),
     .W(store),
     .D(data),
     .Q(result)
   );
+
+endmodule
