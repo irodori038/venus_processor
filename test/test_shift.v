@@ -45,13 +45,15 @@ module test_shift();
   );
 
   initial begin
-    for (i = 0; i < 10; i++) begin
+    src <= 32'h1;
+    dst <= 32'h3;
+    for (i = 0; i < 100; i = i + 1) begin
       src = $random(src);
       dst = $random(dst);
-      check_value(result_left, dst << src);
-      check_value(result_right, dst >> src);
-      check_value(result_math, dst >>> src);
       #(STEP);
+      check_value(result_left, dst << src[4:0]);
+      check_value(result_right, dst >> src[4:0]);
+      check_value(result_math, dst >>> src[4:0]);
     end
     $finish;
   end
@@ -61,7 +63,7 @@ module test_shift();
     input [31:0] a, b;
     begin
       if (a != b) begin
-        $display("ERROR: %h != %h", a, b);
+        $display("ERROR: %b != %b", a, b);
       end
     end
   endtask
