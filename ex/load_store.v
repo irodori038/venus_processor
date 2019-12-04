@@ -2,7 +2,6 @@
 
 module load_store (
   input         clk,
-  input         rst,
   input [31:0]  base,     // base address
   input [31:0]  offset,   // offset address
   input [31:0]  data,     // data to write
@@ -16,7 +15,7 @@ module load_store (
 
   DP_mem32x64k data_mem (
     .clk(clk),
-    .A(address),
+    .A(address[15:0]),
     .W(store),
     .D(data),
     .Q(result)
