@@ -19,6 +19,6 @@ module adder (
   assign zero_flag_o = ~|result_tmp[31:0];
   assign pos_flag_o = ~result_tmp[31];
   assign neg_flag_o = result_tmp[31];
-  assign overflow_flag_o = result_tmp[32];
+  assign overflow_flag_o = ~(minus_i ^ result_tmp[31]);
 
 endmodule
