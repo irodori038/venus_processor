@@ -20,7 +20,8 @@ module ID (
   wb_i,
   wb_data_i,
   pc_value_i,
-  pc_value_o
+  pc_value_o,
+  opcode_o,
 );
 
   parameter W_DOPC  = 9;    // decoded opecode width
@@ -161,6 +162,7 @@ module ID (
   reg [31:0] imm_r;
   reg stall_r;
   reg [15:0] pc_value_r;
+  reg [6:0] opcode_r;
 
   assign ctrl_inte_o  = ctrl_inte_r;
   assign ctrl_logic_o = ctrl_logic_r;
@@ -174,6 +176,7 @@ module ID (
   assign imm_value_o  = imm_r;
   assign stall_o      = stall_r;
   assign pc_value_o   = pc_value_r;
+  assign opcode_o     = opcode_r;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
@@ -189,6 +192,7 @@ module ID (
       imm_r        <= 32'b0;
       stall_r      <= 1'b0;
       pc_value_r   <= 16'h0;
+      opcode_r     <= 7'b0;
     end
     else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
@@ -203,6 +207,7 @@ module ID (
       imm_r        <= imm_r;
       stall_r      <= stall_r;
       pc_value_r   <= pc_value_r;
+      opcode_r     <= opcode_r;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -217,6 +222,7 @@ module ID (
       imm_r        <= dimm;
       stall_r      <= stall_i | reserved_o_register;
       pc_value_r   <= pc_value_i;
+      opcode_r     <= inst_i[W_INST-1:W_INST-W_OPC];
     end
   end
 

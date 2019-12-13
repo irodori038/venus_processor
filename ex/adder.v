@@ -9,6 +9,8 @@ module adder (
   output overflow_flag_o
 );
 
+  `include "../ex/overflow_detect.v"
+
   wire [31:0] tmp;
   wire [32:0] result_tmp;
 
@@ -19,6 +21,6 @@ module adder (
   assign zero_flag_o = ~|result_tmp[31:0];
   assign pos_flag_o = ~result_tmp[31];
   assign neg_flag_o = result_tmp[31];
-  assign overflow_flag_o = ~(minus_i ^ result_tmp[31]);
+  assign overflow_flag_o = overflow_detect(opr0_i, opr1_i, result_tmp[31:0], minus_i);
 
 endmodule

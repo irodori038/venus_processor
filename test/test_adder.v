@@ -66,14 +66,12 @@ module test_adder();
         check_value1(zf_o_adder0, ~|adder_tmp[31:0], "zf");
         check_value1(pf_o_adder0, ~adder_tmp[31], "pf");
         check_value1(nf_o_adder0, adder_tmp[31], "nf");
-        check_value1(of_o_adder0, check_overflow_add(opr0, opr1, adder_tmp[31:0]), "of");
       end
       else begin
         check_value32(result, sub_tmp[31:0], "sub");
         check_value1(zf_o_adder0, ~|sub_tmp[31:0], "zf");
         check_value1(pf_o_adder0, ~sub_tmp[31], "pf");
         check_value1(nf_o_adder0, sub_tmp[31], "nf");
-        check_value1(of_o_adder0, check_overflow_sub(opr0, opr1, sub_tmp[31:0]), "of");
       end
     end
     $finish;
