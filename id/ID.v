@@ -22,6 +22,7 @@ module ID (
   pc_value_i,
   pc_value_o,
   opcode_o,
+  rd_addr_o
 );
 
   parameter W_DOPC  = 9;    // decoded opecode width
@@ -44,6 +45,9 @@ module ID (
   output ctrl_st_o;         // control (store)
   output ctrl_br_o;         // control (branch)
   output immf_o;            // immediate flag (1: use immediate)
+  output [15:0] pc_value_o;
+  output [6:0] opcode_o;
+  output [3:0] rd_addr_o;
 
   // stall flag
   output stall_o;
@@ -163,6 +167,7 @@ module ID (
   reg stall_r;
   reg [15:0] pc_value_r;
   reg [6:0] opcode_r;
+  reg [3:0] rd_addr_r;
 
   assign ctrl_inte_o  = ctrl_inte_r;
   assign ctrl_logic_o = ctrl_logic_r;
@@ -177,6 +182,7 @@ module ID (
   assign stall_o      = stall_r;
   assign pc_value_o   = pc_value_r;
   assign opcode_o     = opcode_r;
+  assign rd_addr_o    = rd_addr_r;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
@@ -193,6 +199,7 @@ module ID (
       stall_r      <= 1'b0;
       pc_value_r   <= 16'h0;
       opcode_r     <= 7'b0;
+      rd_addr_r    <= 4'h0;
     end
     else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
@@ -208,6 +215,7 @@ module ID (
       stall_r      <= stall_r;
       pc_value_r   <= pc_value_r;
       opcode_r     <= opcode_r;
+      rd_addr_r    <= rd_addr_r;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -223,6 +231,7 @@ module ID (
       stall_r      <= stall_i | reserved_o_register;
       pc_value_r   <= pc_value_i;
       opcode_r     <= inst_i[W_INST-1:W_INST-W_OPC];
+      rd_addr_r    <= rd_addr;
     end
   end
 

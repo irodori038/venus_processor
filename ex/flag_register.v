@@ -1,5 +1,3 @@
-`include "../reg/register_cell.v"
-
 module flag_register (
   input clk,
   input rst,

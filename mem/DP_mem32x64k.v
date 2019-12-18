@@ -2,7 +2,7 @@ module DP_mem32x64k(clk,
                     A,
                     W,
                     D,
-                    Q,
+                    Q
                     );
 
   parameter WORD = 32;
@@ -31,9 +31,6 @@ module DP_mem32x64k(clk,
       o_reg <= mem_bank[A];
   end
 
-  initial begin
-    $readmemh("../mem/mem.dat", mem_bank);
-  end
 
 
 endmodule // DP_mem32x64k
