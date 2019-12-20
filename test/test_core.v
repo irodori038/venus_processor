@@ -2,6 +2,7 @@
 `include "../top/core.v"
 
 module test_core();
+  `include "../test/test_utils.v"
 
   parameter STEP = 10;
   integer i, j;
@@ -42,27 +43,7 @@ module test_core();
 
   always @(posedge clk) begin
     $display("########## cycle %d ##########", i);
-    for (j = 0; j < 16; j = j + 1) begin
-      $write("|   %h", j[3:0]);
-    end
-    $display("|");
-    $write("|%h", core0.id0.register.r0.data_o[15:0]);
-    $write("|%h", core0.id0.register.r1.data_o[15:0]);
-    $write("|%h", core0.id0.register.r2.data_o[15:0]);
-    $write("|%h", core0.id0.register.r3.data_o[15:0]);
-    $write("|%h", core0.id0.register.r4.data_o[15:0]);
-    $write("|%h", core0.id0.register.r5.data_o[15:0]);
-    $write("|%h", core0.id0.register.r6.data_o[15:0]);
-    $write("|%h", core0.id0.register.r7.data_o[15:0]);
-    $write("|%h", core0.id0.register.r8.data_o[15:0]);
-    $write("|%h", core0.id0.register.r9.data_o[15:0]);
-    $write("|%h", core0.id0.register.ra.data_o[15:0]);
-    $write("|%h", core0.id0.register.rb.data_o[15:0]);
-    $write("|%h", core0.id0.register.rc.data_o[15:0]);
-    $write("|%h", core0.id0.register.rd.data_o[15:0]);
-    $write("|%h", core0.id0.register.re.data_o[15:0]);
-    $write("|%h", core0.id0.register.rf.data_o[15:0]);
-    $display("|");
+    print_regs();
 
     $display("---------- Instruction fetch ----------");
     $display("PC: %h", core0.ifetch0.pc);
