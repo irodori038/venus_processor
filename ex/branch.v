@@ -1,5 +1,5 @@
 module branch (
-  input [31:0]  pc_i,       // value of program counter
+  input [15:0]  pc_i,       // value of program counter
   input [2:0]   cc_i,       // condition code
   input [5:0]   flags_i,    // value of flag register
   input [31:0]  src_i,      // value of rs

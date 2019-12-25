@@ -1,3 +1,4 @@
+`default_nettype none
 `timescale 1ns/100ps
 `include "../top/core.v"
 
@@ -34,7 +35,7 @@ module test_core();
     rst = 1'b1;
 
     // run
-    for (i = 0; i < 10; i = i + 1) begin
+    for (i = 0; i < 12; i = i + 1) begin
       #(STEP);
     end
 
@@ -58,6 +59,9 @@ module test_core();
     $display("rs_value: %h", core0.id0.rs_value_o);
     $display("imm_value: %h", core0.id0.imm_value_o);
     $display("ctrl_inte: %h", core0.id0.ctrl_inte_o);
+    $display("ctrl_br: %h", core0.id0.ctrl_br_o);
+    $display("inst_i: %h", core0.id0.inst_i);
+    $display("inst_i[31:25]: %b", core0.id0.inst_i[31:25]);
     $display("stall_i: %b", core0.id0.stall_i);
     $display("");
     $display("---------- Execute ----------");
@@ -73,3 +77,5 @@ module test_core();
   end
 
 endmodule
+
+`default_nettype wire

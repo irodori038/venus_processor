@@ -15,15 +15,16 @@ module core (
   wire [31:0] Q_DP_mem32x64k0;
   wire [31:0] inst_o_ifetch0;
   wire branch_en_o_ex0;
-  wire [15:0] branch_addr_o_ex0;
+  // wire [15:0] branch_addr_o_ex0;
   wire stall_o_id0;
+  wire [31:0] wb_data_o_wb0;
 
   ifetch ifetch0 (
     .clk(clk),
     .rst(rst),
     .inst_i(Q_DP_mem32x64k0),
     .branch_i(branch_en_o_ex0),
-    .branch_addr_i(branch_addr_o_ex0),
+    .branch_addr_i(wb_data_o_wb0[15:0]),
     .stall_i(stall_o_id0),
     .inst_o(inst_o_ifetch0),
     .inst_addr_o(inst_addr_o_ifetch0)
@@ -56,7 +57,6 @@ module core (
   wire [15:0] pc_value_o_id0;
   wire wb_en_o_wb0;
   wire [3:0] dest_reg_addr_o_wb0;
-  wire [31:0] wb_data_o_wb0;
   wire [6:0] opcode_o_id0;
   wire [3:0] rd_addr_o_id0;
   
@@ -99,6 +99,7 @@ module core (
     .rs_value_i(rs_value_o_id0),
     .imm_value_i(imm_value_o_id0),
     .rd_addr_i(rd_addr_o_id0),
+    .pc_value_i(pc_value_o_id0),
     .opcode_i(opcode_o_id0),
     .ctrl_inte_i(ctrl_inte_o_id0),
     .ctrl_logic_i(ctrl_logic_o_id0),

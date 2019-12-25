@@ -62,6 +62,8 @@ module ID (
 
   assign dopc    = decode_ins(inst_i[W_INST-1:W_INST-W_OPC]);
 
+  wire inte, logic, shift, ld, st, br, imme16, rsv_o, und;
+
   assign inte    = dopc[W_DOPC-1]; // integer
   assign logic   = dopc[W_DOPC-2]; // logic
   assign shift   = dopc[W_DOPC-3]; // shift

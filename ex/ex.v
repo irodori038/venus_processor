@@ -1,4 +1,5 @@
 `include "../ex/adder.v"
+`include "../ex/branch.v"
 `include "../a_stage/a_stage.v"
 `include "../ex/flag_register.v"
 
@@ -9,6 +10,7 @@ module ex (
   input [31:0] rs_value_i,
   input [31:0] imm_value_i,
   input [3:0] rd_addr_i,
+  input [15:0] pc_value_i,
 
   input [6:0] opcode_i,
   input ctrl_inte_i,
@@ -53,20 +55,48 @@ module ex (
     .overflow_flag_o(overflow_flag_o_adder0)
   );
 
+  wire [31:0] data_o_flag_register;
+  wire [5:0] selected_flag;
 
+  a_stage flag_register (
+    .clk(clk),
+    .rst(rst),
+    .v_i(1'b1),
+    .v_o(),
+    .data_i({26'h0, selected_flag}),
+    .data_o(data_o_flag_register),
+    .stall_i(1'b0),
+    .stall_o()
+  );
+
+  wire [31:0] result_o_branch0;
+  wire branch_en_o_branch0;
+
+  branch branch0 (
+    .pc_i(pc_value_i),
+    .cc_i(rd_value_i[2:0]),
+    .flags_i(data_o_flag_register[5:0]),
+    .src_i(rs_value_i),
+    .abs_i(opcode_i[0]),
+    .dest_addr_o(result_o_branch0),
+    .branch_en_o(branch_en_o_branch0)
+  );
 
 
   `include "../ex/selector.v"
-  wire [5:0] selected_flag;
   assign selected_flag = selector (
     .ctrl_inte(ctrl_inte_i),
-    .result_from_adder({{26{1'b0}}, flags_adder0})
+    .ctrl_br(ctrl_br_i),
+    .result_from_adder({{26{1'b0}}, flags_adder0}),
+    .result_from_branch(result_o_branch0)
   );
   
   wire [31:0] selected_result;
   assign selected_result = selector(
     .ctrl_inte(ctrl_inte_i),
-    .result_from_adder(result_o_adder0)
+    .ctrl_br(ctrl_br_i),
+    .result_from_adder(result_o_adder0),
+    .result_from_branch(result_o_branch0)
   );
 
   wire [31:0] data_o_ctrl_register;
@@ -79,7 +109,7 @@ module ex (
     .rst(rst),
     .v_i(1'b1),
     .v_o(),
-    .data_i({26'h0, rd_addr_i, ~(ctrl_st_i | ctrl_br_i), ctrl_br_i}),
+    .data_i({26'h0, rd_addr_i, ~(ctrl_st_i | ctrl_br_i), (ctrl_br_i & branch_en_o_branch0)}),
     .data_o(data_o_ctrl_register),
     .stall_i(1'b0),
     .stall_o(stall_o)
