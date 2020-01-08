@@ -117,7 +117,7 @@ module core (
 
 
 
-  // ********** Execute ***********
+  // ********** Write back ***********
   //
   wb wb0 (
     .wb_en_i(wb_en_o_ex0),

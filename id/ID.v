@@ -232,7 +232,7 @@ module ID (
       imm_r        <= dimm;
       stall_r      <= stall_i | reserved_o_register;
       pc_value_r   <= pc_value_i;
-      opcode_r     <= inst_i[W_INST-1:W_INST-W_OPC];
+      opcode_r     <= inst_i[31:25];
       rd_addr_r    <= rd_addr;
     end
   end
