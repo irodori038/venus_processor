@@ -74,9 +74,9 @@ module ex (
 
   branch branch0 (
     .pc_i(pc_value_i),
-    .cc_i(rd_value_i[2:0]),
+    .cc_i(rd_addr_i[2:0]),
     .flags_i(data_o_flag_register[5:0]),
-    .src_i(rs_value_i),
+    .src_i(immf_i ? imm_value_i : rs_value_i),
     .abs_i(opcode_i[0]),
     .dest_addr_o(result_o_branch0),
     .branch_en_o(branch_en_o_branch0)
@@ -103,6 +103,7 @@ module ex (
   assign branch_en_o = data_o_ctrl_register[0];
   assign wb_en_o = data_o_ctrl_register[1];
   assign rd_addr_o = data_o_ctrl_register[5:2];
+  wire stall_o_ctrl_register;
 
   a_stage ctrl_register (
     .clk(clk),
@@ -112,8 +113,10 @@ module ex (
     .data_i({26'h0, rd_addr_i, ~(ctrl_st_i | ctrl_br_i), (ctrl_br_i & branch_en_o_branch0)}),
     .data_o(data_o_ctrl_register),
     .stall_i(1'b0),
-    .stall_o(stall_o)
+    .stall_o(stall_o_ctrl_register)
   );
+
+  wire stall_o_result_stage;
 
   a_stage result_stage (
     .clk(clk),
@@ -123,8 +126,11 @@ module ex (
     .data_i(selected_result),
     .data_o(result_o),
     .stall_i(1'b0),
-    .stall_o(stall_o)
+    .stall_o(stall_o_result_stage)
   );
+
+  assign stall_o = stall_o_ctrl_register | stall_o_result_stage | ctrl_br_i;
+
 
 
 endmodule

@@ -35,7 +35,7 @@ module test_core();
     rst = 1'b1;
 
     // run
-    for (i = 0; i < 12; i = i + 1) begin
+    for (i = 0; i < 25; i = i + 1) begin
       #(STEP);
     end
 
@@ -54,34 +54,32 @@ module test_core();
     $display("stall_i: %b", core0.ifetch0.stall_i);
     $display("");
     $display("---------- Instruction decode ----------");
-    $display("PC: %h", core0.id0.pc_value_o);
-    print_mnemonic(core0.ifetch0.inst_i[31:25]);
+    $display("PC: %h", core0.id0.pc_value_i);
+    $display("stall: %h", core0.id0.stall_i);
+    $display("rsvd_o_re: %b", core0.id0.reserved_o_register);
+    print_mnemonic(core0.id0.inst_i[31:25]);
     $display("");
-    $display("rd_value: %h", core0.id0.rd_value_o);
-    $display("rs_value: %h", core0.id0.rs_value_o);
-    $display("imm_value: %h", core0.id0.imm_value_o);
-    $display("ctrl_inte: %h", core0.id0.ctrl_inte_o);
-    $display("ctrl_br: %h", core0.id0.ctrl_br_o);
-    $display("inst_i: %h", core0.id0.inst_i);
-    $display("inst_i[31:25]: %b", core0.id0.inst_i[31:25]);
-    $display("stall_i: %b", core0.id0.stall_i);
+    $display("Write Back enable: %b", core0.id0.wb_i);
+    $display("Write Back data: %h", core0.id0.wb_data_i);
     $display("");
     $display("---------- Execute ----------");
     $display("PC: %h", core0.ex0.pc_value_i);
     print_mnemonic(core0.ex0.opcode_i);
     $display("");
-    $display("stage result: %h", core0.ex0.result_o);
-    $display("stage branch_en_o: %b", core0.ex0.branch_en_o);
-    $display("adder_i0: %h", core0.ex0.adder0.opr0_i);
-    $display("adder_i1: %h", core0.ex0.adder0.opr1_i);
-    $display("result_adder: %h", core0.ex0.adder0.result_o);
-    $display("branch: pc_i = %h", core0.ex0.branch0.pc_i);
-    $display("branch: cc_i = %b", core0.ex0.branch0.cc_i);
-    $display("branch: flags_i = %b", core0.ex0.branch0.flags_i);
-    $display("branch: src_i = %h", core0.ex0.branch0.src_i);
-    $display("branch: abs_i = %h", core0.ex0.branch0.abs_i);
-    $display("branch: dest_addr_o = %h", core0.ex0.branch0.dest_addr_o);
-    $display("ctrl: data_i[0] = %h", core0.ex0.ctrl_register.data_i[0]);
+    display_ctrl_line(
+      .inte(core0.ex0.ctrl_inte_i),
+      .logic(core0.ex0.ctrl_logic_i),
+      .shift(core0.ex0.ctrl_shift_i),
+      .ld(core0.ex0.ctrl_ld_i),
+      .st(core0.ex0.ctrl_st_i),
+      .br(core0.ex0.ctrl_br_i),
+      .immf(core0.ex0.immf_i)
+    );
+    $display("rd: %h", core0.ex0.rd_value_i);
+    $display("rs: %h", core0.ex0.rs_value_i);
+    $display("im: %h", core0.ex0.imm_value_i);
+    display_flags(core0.ex0.flag_register.data_o);
+    display_cc(core0.ex0.rd_addr_i[2:0]);
     $display("");
     $display("---------- Write back ----------");
     $display("wb_en_o: %h", core0.wb0.wb_en_o);

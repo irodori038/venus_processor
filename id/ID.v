@@ -116,8 +116,8 @@ module ID (
         // branch
         7'b00_11100: decode_ins = 9'b000001_0_1_0;
         7'b00_11101: decode_ins = 9'b000001_0_1_0;
-        7'b00_11110: decode_ins = 9'b000001_0_1_0;
-        7'b00_11111: decode_ins = 9'b000001_0_1_0;
+        7'b00_11110: decode_ins = 9'b000000_0_1_0;
+        7'b00_11111: decode_ins = 9'b000000_0_1_0;
 
         default:     decode_ins = 9'b000000_0_0_1;
       endcase
@@ -148,7 +148,7 @@ module ID (
 
 
   // *************** stall logic ********************
-  assign stall_o = stall_i | reserved_o_register;
+  assign stall_o = stall_i | (reserved_o_register & (inte | logic | shift | ld | st));
 
   // **************** decode immediate ****************
   `include "../id/SignEx.v" 
