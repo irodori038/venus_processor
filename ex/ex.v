@@ -1,5 +1,6 @@
 `include "../ex/adder.v"
 `include "../ex/branch.v"
+`include "../ex/load_store.v"
 `include "../a_stage/a_stage.v"
 `include "../ex/flag_register.v"
 
@@ -83,11 +84,24 @@ module ex (
     .branch_en_o(branch_en_o_branch0)
   );
 
+  wire [31:0] result_o_ls0;
+
+  load_store ls0 (
+    .clk(clk),
+    .rd(rd_value_i),
+    .rs(rs_value_i),
+    .offset(imm_value_i),
+    .load(ctrl_ld_i),
+    .store(ctrl_st_i),
+    .result(result_o_ls0)
+  );
 
   `include "../ex/selector.v"
   assign selected_flag = selector (
     ctrl_inte_i,
     ctrl_br_i,
+    ctrl_ld_i,
+    ctrl_st_i,
     {{26{1'b0}}, flags_adder0},
     result_o_branch0
   );
@@ -96,6 +110,8 @@ module ex (
   assign selected_result = selector(
     ctrl_inte_i,
     ctrl_br_i,
+    ctrl_ld_i,
+    ctrl_st_i,
     result_o_adder0,
     result_o_branch0
   );
@@ -118,6 +134,7 @@ module ex (
   );
 
   wire stall_o_result_stage;
+  wire [31:0] result_o_pipeline_stage;
 
   a_stage result_stage (
     .clk(clk),
@@ -125,10 +142,12 @@ module ex (
     .v_i(1'b1),
     .v_o(),
     .data_i(selected_result),
-    .data_o(result_o),
+    .data_o(result_o_pipeline_stage),
     .stall_i(1'b0),
     .stall_o(stall_o_result_stage)
   );
+
+  assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_branch0 : result_o_pipeline_stage;
 
   assign stall_o = stall_o_ctrl_register | stall_o_result_stage | ctrl_br_i;
 
