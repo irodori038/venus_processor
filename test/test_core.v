@@ -35,7 +35,7 @@ module test_core();
     rst = 1'b1;
 
     // run
-    for (i = 0; i < 25; i = i + 1) begin
+    for (i = 0; i < 50; i = i + 1) begin
       #(STEP);
     end
 
@@ -55,9 +55,10 @@ module test_core();
     $display("");
     $display("---------- Instruction decode ----------");
     $display("PC: %h", core0.id0.pc_value_i);
-    $display("stall: %h", core0.id0.stall_i);
+    $display("stall: %b", core0.id0.stall_i);
     $display("rsvd_o_re: %b", core0.id0.reserved_o_register);
     print_mnemonic(core0.id0.inst_i[31:25]);
+    write_args(core0.id0.inst_i);
     $display("");
     $display("Write Back enable: %b", core0.id0.wb_i);
     $display("Write Back data: %h", core0.id0.wb_data_i);
@@ -67,20 +68,20 @@ module test_core();
     print_mnemonic(core0.ex0.opcode_i);
     $display("");
     display_ctrl_line(
-      .inte(core0.ex0.ctrl_inte_i),
-      .logic(core0.ex0.ctrl_logic_i),
-      .shift(core0.ex0.ctrl_shift_i),
-      .ld(core0.ex0.ctrl_ld_i),
-      .st(core0.ex0.ctrl_st_i),
-      .br(core0.ex0.ctrl_br_i),
-      .immf(core0.ex0.immf_i)
+      core0.ex0.ctrl_inte_i,
+      core0.ex0.ctrl_logic_i,
+      core0.ex0.ctrl_shift_i,
+      core0.ex0.ctrl_ld_i,
+      core0.ex0.ctrl_st_i,
+      core0.ex0.ctrl_br_i,
+      core0.ex0.immf_i
     );
     $display("rd: %h", core0.ex0.rd_value_i);
     $display("rs: %h", core0.ex0.rs_value_i);
     $display("im: %h", core0.ex0.imm_value_i);
     display_flags(core0.ex0.flag_register.data_o);
     display_cc(core0.ex0.rd_addr_i[2:0]);
-    $display("");
+    $display("rsv_i: %b", core0.ex0.rsv_i);
     $display("---------- Write back ----------");
     $display("wb_en_o: %h", core0.wb0.wb_en_o);
     $display("dest_reg_addr_o: %h", core0.wb0.dest_reg_addr_o);

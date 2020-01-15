@@ -30,9 +30,6 @@ module branch (
   endfunction
 
 
-  assign branch_en_o = check_branch(
-    .flags_i(flags_i),
-    .cc_i(cc_i)
-  );
+  assign branch_en_o = check_branch(flags_i, cc_i);
 
 endmodule

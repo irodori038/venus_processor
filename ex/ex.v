@@ -20,6 +20,7 @@ module ex (
   input ctrl_st_i,
   input ctrl_br_i,
   input immf_i,
+  input rsv_i,
 
   output  stall_o,
   output branch_en_o,
@@ -85,18 +86,18 @@ module ex (
 
   `include "../ex/selector.v"
   assign selected_flag = selector (
-    .ctrl_inte(ctrl_inte_i),
-    .ctrl_br(ctrl_br_i),
-    .result_from_adder({{26{1'b0}}, flags_adder0}),
-    .result_from_branch(result_o_branch0)
+    ctrl_inte_i,
+    ctrl_br_i,
+    {{26{1'b0}}, flags_adder0},
+    result_o_branch0
   );
   
   wire [31:0] selected_result;
   assign selected_result = selector(
-    .ctrl_inte(ctrl_inte_i),
-    .ctrl_br(ctrl_br_i),
-    .result_from_adder(result_o_adder0),
-    .result_from_branch(result_o_branch0)
+    ctrl_inte_i,
+    ctrl_br_i,
+    result_o_adder0,
+    result_o_branch0
   );
 
   wire [31:0] data_o_ctrl_register;
@@ -110,7 +111,7 @@ module ex (
     .rst(rst),
     .v_i(1'b1),
     .v_o(),
-    .data_i({26'h0, rd_addr_i, ~(ctrl_st_i | ctrl_br_i), (ctrl_br_i & branch_en_o_branch0)}),
+    .data_i({26'h0, rd_addr_i, rsv_i, (ctrl_br_i & branch_en_o_branch0)}),
     .data_o(data_o_ctrl_register),
     .stall_i(1'b0),
     .stall_o(stall_o_ctrl_register)

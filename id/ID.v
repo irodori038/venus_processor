@@ -22,7 +22,8 @@ module ID (
   pc_value_i,
   pc_value_o,
   opcode_o,
-  rd_addr_o
+  rd_addr_o,
+  rsv_o
 );
 
   parameter W_DOPC  = 9;    // decoded opecode width
@@ -58,11 +59,13 @@ module ID (
   output [31:0] rs_value_o; // value of source register (may not be unused)
   output [31:0] imm_value_o;  // value of immediate
 
+  output rsv_o;
+
   wire [W_DOPC-1:0] dopc; // decoded opecode
 
   assign dopc    = decode_ins(inst_i[W_INST-1:W_INST-W_OPC]);
 
-  wire inte, logic, shift, ld, st, br, imme16, rsv_o, und;
+  wire inte, logic, shift, ld, st, br, imme16, rsv, und;
 
   assign inte    = dopc[W_DOPC-1]; // integer
   assign logic   = dopc[W_DOPC-2]; // logic
@@ -71,7 +74,7 @@ module ID (
   assign st      = dopc[W_DOPC-5]; // store
   assign br      = dopc[W_DOPC-6]; // branch
   assign imme16  = dopc[W_DOPC-7]; // immediate 16
-  assign rsv_o   = dopc[W_DOPC-8]; // reserve
+  assign rsv   = dopc[W_DOPC-8]; // reserve
   assign und     = dopc[W_DOPC-9]; // undefined
 
   // **************** decode opecode *****************
@@ -114,10 +117,10 @@ module ID (
         7'b00_11001: decode_ins = 9'b000010_0_1_0;
 
         // branch
-        7'b00_11100: decode_ins = 9'b000001_0_1_0;
-        7'b00_11101: decode_ins = 9'b000001_0_1_0;
-        7'b00_11110: decode_ins = 9'b000000_0_1_0;
-        7'b00_11111: decode_ins = 9'b000000_0_1_0;
+        7'b00_11100: decode_ins = 9'b000001_0_0_0;
+        7'b00_11101: decode_ins = 9'b000001_0_0_0;
+        7'b00_11110: decode_ins = 9'b000000_0_0_0;
+        7'b00_11111: decode_ins = 9'b000000_0_0_0;
 
         default:     decode_ins = 9'b000000_0_0_1;
       endcase
@@ -170,6 +173,7 @@ module ID (
   reg [15:0] pc_value_r;
   reg [6:0] opcode_r;
   reg [3:0] rd_addr_r;
+  reg rsv_r;
 
   assign ctrl_inte_o  = ctrl_inte_r;
   assign ctrl_logic_o = ctrl_logic_r;
@@ -185,6 +189,7 @@ module ID (
   assign pc_value_o   = pc_value_r;
   assign opcode_o     = opcode_r;
   assign rd_addr_o    = rd_addr_r;
+  assign rsv_o        = rsv_r;
 
   always @(posedge clk or negedge rst) begin
     if (~rst) begin
@@ -202,6 +207,7 @@ module ID (
       pc_value_r   <= 16'h0;
       opcode_r     <= 7'b0;
       rd_addr_r    <= 4'h0;
+      rsv_r        <= 1'b0;
     end
     else if (stall_o) begin
       ctrl_inte_r  <= ctrl_inte_r;
@@ -218,6 +224,7 @@ module ID (
       pc_value_r   <= pc_value_r;
       opcode_r     <= opcode_r;
       rd_addr_r    <= rd_addr_r;
+      rsv_r        <= rsv_r;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -234,6 +241,7 @@ module ID (
       pc_value_r   <= pc_value_i;
       opcode_r     <= inst_i[31:25];
       rd_addr_r    <= rd_addr;
+      rsv_r        <= rsv;
     end
   end
 

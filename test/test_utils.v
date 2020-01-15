@@ -103,6 +103,15 @@ task print_mnemonic;
   endcase
 endtask
 
+task write_args;
+  input [31:0] inst;
+  begin
+    $write(" r%h,", inst[23:20]);
+    if (~inst[24]) $write(" r%h", inst[19:16]);
+    else $write(" %d", inst[15:0]);
+  end
+endtask
+
 task display_flags;
   input [5:0] flags_i;
   begin

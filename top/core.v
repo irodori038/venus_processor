@@ -59,6 +59,7 @@ module core (
   wire [3:0] dest_reg_addr_o_wb0;
   wire [6:0] opcode_o_id0;
   wire [3:0] rd_addr_o_id0;
+  wire rsv_o_id0;
   
   ID id0 (
     .clk(clk),
@@ -82,7 +83,8 @@ module core (
     .pc_value_i(inst_addr_o_ifetch0),
     .pc_value_o(pc_value_o_id0),
     .opcode_o(opcode_o_id0),
-    .rd_addr_o(rd_addr_o_id0)
+    .rd_addr_o(rd_addr_o_id0),
+    .rsv_o(rsv_o_id0)
   );
 
 
@@ -108,6 +110,7 @@ module core (
     .ctrl_st_i(ctrl_st_o_id0),
     .ctrl_br_i(ctrl_br_o_id0),
     .immf_i(immf_o_id0),
+    .rsv_i(rsv_o_id0),
     .stall_o(stall_o_ex0),
     .branch_en_o(branch_en_o_ex0),
     .wb_en_o(wb_en_o_ex0),
