@@ -43,7 +43,7 @@ module ifetch(clk,
     else
       if (stall_i) begin
         addr_r <= addr_r;
-        pc <= next_pc;
+        pc <= pc;
       end // if (stall_i)
       else begin
         pc = next_pc;

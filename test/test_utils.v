@@ -155,3 +155,14 @@ task display_ctrl_line;
     $display("+----+----+----+----+----+----+----+");
   end
 endtask
+
+task dump_data_memory;
+  integer [15:0] addr;
+  begin
+    $display("--- memory dump ---");
+    for (addr = 0; addr < 16'ha; addr = addr + 1'h1) begin
+      $write("%h: ", addr);
+      $display("%h", core0.ex0.ls0.data_mem.mem_bank[addr]);
+    end
+  end
+endtask

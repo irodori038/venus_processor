@@ -32,7 +32,7 @@ module ex (
 );
 
   wire [31:0] result_o_adder0;
-  wire flags_adder0;
+  wire [5:0] flags_adder0;
   wire zero_flag_o_adder0;
   wire pos_flag_o_adder0;
   wire neg_flag_o_adder0;
@@ -49,7 +49,7 @@ module ex (
   adder adder0 (
     .opr0_i(rd_value_i),
     .opr1_i(immf_i ? imm_value_i : rs_value_i),
-    .minus_i(opcode_i[0]),      // if 1 then inst "sub"
+    .minus_i(opcode_i[0] | opcode_i == 7'b000_0100),      // if 1 then inst "sub"
     .result_o(result_o_adder0),
     .zero_flag_o(zero_flag_o_adder0),
     .pos_flag_o(pos_flag_o_adder0),
@@ -148,8 +148,8 @@ module ex (
   );
 
   assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_branch0 : result_o_pipeline_stage;
+  assign stall_o = stall_o_ctrl_register | stall_o_result_stage | (branch_en_o_branch0 & ctrl_br_i);
 
-  assign stall_o = stall_o_ctrl_register | stall_o_result_stage | ctrl_br_i;
 
 
 

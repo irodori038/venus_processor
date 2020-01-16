@@ -138,7 +138,7 @@ module ID (
   g_register register (
     .clk(clk),
     .rst(rst),
-    .w_reserve_i(rsv_o),
+    .w_reserve_i(rsv),
     .r0_i(rd_addr),
     .r1_i(rs_addr),
     .r_opr0_o(r_opr0_o_register),
@@ -169,7 +169,6 @@ module ID (
   reg [31:0] rs_value_r;
   reg immf_r;
   reg [31:0] imm_r;
-  reg stall_r;
   reg [15:0] pc_value_r;
   reg [6:0] opcode_r;
   reg [3:0] rd_addr_r;
@@ -185,7 +184,6 @@ module ID (
   assign rs_value_o   = rs_value_r;
   assign immf_o       = immf_r;
   assign imm_value_o  = imm_r;
-  assign stall_o      = stall_r;
   assign pc_value_o   = pc_value_r;
   assign opcode_o     = opcode_r;
   assign rd_addr_o    = rd_addr_r;
@@ -203,28 +201,26 @@ module ID (
       rs_value_r   <= 32'h0;
       immf_r       <= 1'b0;
       imm_r        <= 32'b0;
-      stall_r      <= 1'b0;
       pc_value_r   <= 16'h0;
       opcode_r     <= 7'b0;
       rd_addr_r    <= 4'h0;
       rsv_r        <= 1'b0;
     end
     else if (stall_o) begin
-      ctrl_inte_r  <= ctrl_inte_r;
-      ctrl_logic_r <= ctrl_logic_r;
-      ctrl_shift_r <= ctrl_shift_r;
-      ctrl_ld_r    <= ctrl_ld_r;
-      ctrl_st_r    <= ctrl_st_r;
-      ctrl_br_r    <= ctrl_br_r;
-      rd_value_r   <= rd_value_r;
-      rs_value_r   <= rs_value_r;
-      immf_r       <= immf_r;
-      imm_r        <= imm_r;
-      stall_r      <= stall_r;
-      pc_value_r   <= pc_value_r;
-      opcode_r     <= opcode_r;
-      rd_addr_r    <= rd_addr_r;
-      rsv_r        <= rsv_r;
+      ctrl_inte_r  <= 1'b0;
+      ctrl_logic_r <= 1'b0;
+      ctrl_shift_r <= 1'b0;
+      ctrl_ld_r    <= 1'b0;
+      ctrl_st_r    <= 1'b0;
+      ctrl_br_r    <= 1'b0;
+      rd_value_r   <= 32'h0;
+      rs_value_r   <= 32'h0;
+      immf_r       <= 1'b0;
+      imm_r        <= 32'h0;
+      pc_value_r   <= 16'h0;
+      opcode_r     <= 7'b001_1110;
+      rd_addr_r    <= 4'h0;
+      rsv_r        <= 1'b0;
     end
     else begin
       ctrl_inte_r  <= inte;
@@ -237,7 +233,6 @@ module ID (
       rs_value_r   <= r_opr1_o_register;
       immf_r       <= inst_i[24];
       imm_r        <= dimm;
-      stall_r      <= stall_i | reserved_o_register;
       pc_value_r   <= pc_value_i;
       opcode_r     <= inst_i[31:25];
       rd_addr_r    <= rd_addr;

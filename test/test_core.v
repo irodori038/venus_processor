@@ -23,6 +23,7 @@ module test_core();
   initial begin
     // store iinstrucion to instrucion memory
     $readmemh("../mem/mem.dat", core0.Inst_mem.mem_bank);
+    $readmemh("../mem/data_mem.dat", core0.ex0.ls0.data_mem.mem_bank);
     // set initial value
     i = 0;
     clk = 1'b0;
@@ -35,7 +36,7 @@ module test_core();
     rst = 1'b1;
 
     // run
-    for (i = 0; i < 50; i = i + 1) begin
+    for (i = 0; i < 70; i = i + 1) begin
       #(STEP);
     end
 
@@ -45,6 +46,7 @@ module test_core();
   always @(posedge clk) begin
     $display("########## cycle %d ##########", i);
     print_regs();
+    dump_data_memory();
 
     $display("---------- Instruction fetch ----------");
     $display("PC: %h", core0.ifetch0.pc);
@@ -62,6 +64,7 @@ module test_core();
     $display("");
     $display("Write Back enable: %b", core0.id0.wb_i);
     $display("Write Back data: %h", core0.id0.wb_data_i);
+    $display("stall_o: %b", core0.id0.stall_o);
     $display("");
     $display("---------- Execute ----------");
     $display("PC: %h", core0.ex0.pc_value_i);
@@ -81,7 +84,8 @@ module test_core();
     $display("im: %h", core0.ex0.imm_value_i);
     display_flags(core0.ex0.flag_register.data_o);
     display_cc(core0.ex0.rd_addr_i[2:0]);
-    $display("rsv_i: %b", core0.ex0.rsv_i);
+    $display("Adder dst=%h, src=%h, zf_o:%b", core0.ex0.adder0.opr0_i, core0.ex0.adder0.opr1_i, core0.ex0.adder0.zero_flag_o);
+    $display("Next FR: %b", core0.ex0.flags_adder0);
     $display("---------- Write back ----------");
     $display("wb_en_o: %h", core0.wb0.wb_en_o);
     $display("dest_reg_addr_o: %h", core0.wb0.dest_reg_addr_o);
