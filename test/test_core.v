@@ -22,7 +22,7 @@ module test_core();
 
   initial begin
     // store iinstrucion to instrucion memory
-    $readmemh("../mem/mem.dat", core0.Inst_mem.mem_bank);
+    $readmemh("../mem/mem.dat", core0.ifetch0.inst_mem.mem_bank);
     $readmemh("../mem/data_mem.dat", core0.ex0.ls0.data_mem.mem_bank);
     // set initial value
     i = 0;
@@ -50,7 +50,7 @@ module test_core();
 
     $display("---------- Instruction fetch ----------");
     $display("PC: %h", core0.ifetch0.pc);
-    $display("inst_i: %h", core0.ifetch0.inst_i);
+    $display("PC_buf: %h", core0.ifetch0.inst_addr_buf_r);
     $display("branch_i: %b", core0.ifetch0.branch_i);
     $display("branch_addr_i: %h", core0.ifetch0.branch_addr_i);
     $display("stall_i: %b", core0.ifetch0.stall_i);

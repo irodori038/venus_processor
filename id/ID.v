@@ -151,7 +151,8 @@ module ID (
 
 
   // *************** stall logic ********************
-  assign stall_o = stall_i | (reserved_o_register & (inte | logic | shift | ld | st));
+  assign stall_o = stall_i;
+  // assign stall_o = stall_i | (reserved_o_register & (inte | logic | shift | ld | st));
 
   // **************** decode immediate ****************
   `include "../id/SignEx.v" 
@@ -202,7 +203,7 @@ module ID (
       immf_r       <= 1'b0;
       imm_r        <= 32'b0;
       pc_value_r   <= 16'h0;
-      opcode_r     <= 7'b0;
+      opcode_r     <= 7'b001_1110;
       rd_addr_r    <= 4'h0;
       rsv_r        <= 1'b0;
     end

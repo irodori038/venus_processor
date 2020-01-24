@@ -147,7 +147,7 @@ module ex (
     .stall_o(stall_o_result_stage)
   );
 
-  assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_branch0 : result_o_pipeline_stage;
+  assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_ls0 : result_o_pipeline_stage;
   assign stall_o = stall_o_ctrl_register | stall_o_result_stage | (branch_en_o_branch0 & ctrl_br_i);
 
 

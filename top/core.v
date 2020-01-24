@@ -1,5 +1,4 @@
 `include "../if/ifetch.v"
-`include "../mem/DP_mem32x64k.v"
 `include "../id/ID.v"
 `include "../ex/ex.v"
 `include "../wb/wb.v"
@@ -22,21 +21,11 @@ module core (
   ifetch ifetch0 (
     .clk(clk),
     .rst(rst),
-    .inst_i(Q_DP_mem32x64k0),
     .branch_i(branch_en_o_ex0),
     .branch_addr_i(wb_data_o_wb0[15:0]),
     .stall_i(stall_o_id0),
     .inst_o(inst_o_ifetch0),
     .inst_addr_o(inst_addr_o_ifetch0)
-  );
-
-  // Instruction Memory
-  DP_mem32x64k Inst_mem (
-    .clk(clk),
-    .A(inst_addr_o_ifetch0),
-    .W(1'b0),
-    .D(32'h0),
-    .Q(Q_DP_mem32x64k0)
   );
 
 

@@ -157,7 +157,7 @@ task display_ctrl_line;
 endtask
 
 task dump_data_memory;
-  integer [15:0] addr;
+  integer addr;
   begin
     $display("--- memory dump ---");
     for (addr = 0; addr < 16'ha; addr = addr + 1'h1) begin
