@@ -10,7 +10,7 @@ module load_store (
 
   wire [31:0] address;
   wire [31:0] base;
-  assign base = load ? rs : rd;
+  assign base = rs;
   assign address = base + offset;
 
 
@@ -18,7 +18,7 @@ module load_store (
     .clk(clk),
     .A(address[15:0]),
     .W(store),
-    .D(rs),
+    .D(rd),
     .Q(result)
   );
 

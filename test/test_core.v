@@ -36,7 +36,7 @@ module test_core();
     rst = 1'b1;
 
     // run
-    for (i = 0; i < 70; i = i + 1) begin
+    for (i = 0; i < 65; i = i + 1) begin
       #(STEP);
     end
 
@@ -50,7 +50,7 @@ module test_core();
 
     $display("---------- Instruction fetch ----------");
     $display("PC: %h", core0.ifetch0.pc);
-    $display("PC_buf: %h", core0.ifetch0.inst_addr_buf_r);
+    $display("PC_buf: %h", core0.ifetch0.inst_addr_r);
     $display("branch_i: %b", core0.ifetch0.branch_i);
     $display("branch_addr_i: %h", core0.ifetch0.branch_addr_i);
     $display("stall_i: %b", core0.ifetch0.stall_i);
@@ -86,6 +86,12 @@ module test_core();
     display_cc(core0.ex0.rd_addr_i[2:0]);
     $display("Adder dst=%h, src=%h, zf_o:%b", core0.ex0.adder0.opr0_i, core0.ex0.adder0.opr1_i, core0.ex0.adder0.zero_flag_o);
     $display("Next FR: %b", core0.ex0.flags_adder0);
+    $display("Memory: A=%h, W=%b, D=%h, Q=%h",
+      core0.ex0.ls0.data_mem.A,
+      core0.ex0.ls0.data_mem.W,
+      core0.ex0.ls0.data_mem.D,
+      core0.ex0.ls0.data_mem.Q,
+    );
     $display("---------- Write back ----------");
     $display("wb_en_o: %h", core0.wb0.wb_en_o);
     $display("dest_reg_addr_o: %h", core0.wb0.dest_reg_addr_o);
