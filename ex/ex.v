@@ -3,6 +3,7 @@
 `include "../ex/load_store.v"
 `include "../a_stage/a_stage.v"
 `include "../ex/flag_register.v"
+`include "../ex/ex_pipeline_reg.v"
 
 module ex (
   input clk,
@@ -136,6 +137,7 @@ module ex (
   wire stall_o_result_stage;
   wire [31:0] result_o_pipeline_stage;
 
+  /*
   a_stage result_stage (
     .clk(clk),
     .rst(rst),
@@ -146,9 +148,30 @@ module ex (
     .stall_i(1'b0),
     .stall_o(stall_o_result_stage)
   );
+  */
 
-  assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_ls0 : result_o_pipeline_stage;
-  assign stall_o = stall_o_ctrl_register | stall_o_result_stage | (branch_en_o_branch0 & ctrl_br_i);
+  // assign result_o = (ctrl_ld_i | ctrl_st_i) ? result_o_ls0 : result_o_pipeline_stage;
+  assign result_o = result_o_pipeline_stage;
+  assign stall_o = stall_o_ctrl_register | (branch_en_o_branch0 & ctrl_br_i);
+
+  ex_pipeline_reg pipeline_reg (
+    .clk(clk),
+    .rst(rst),
+    .ctrl_addsub_i(ctrl_inte_i),
+    .ctrl_mul_i(),
+    .ctrl_shift_i(ctrl_shift_i),
+    .ctrl_logic_i(ctrl_logic_i),
+    .ctrl_ld_i(ctrl_ld_i),
+    .ctrl_br_i(ctrl_br_i),
+    .result_addsub_i(result_o_adder0),
+    .result_mul_i(),
+    .result_shift_i(),
+    .result_logic_i(),
+    .result_ld_i(result_o_ls0),
+    .result_br_i(result_o_branch0),
+    .result_o(result_o_pipeline_stage)
+  );
+
 
 
 

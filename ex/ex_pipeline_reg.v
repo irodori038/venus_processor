@@ -25,7 +25,6 @@ module ex_pipeline_reg (
     else if (ctrl_mul_i) result_r <= result_mul_i;
     else if (ctrl_shift_i) result_r <= result_shift_i;
     else if (ctrl_logic_i) result_r <= result_logic_i;
-    else if (ctrl_ld_i) result_r <= result_ld_i;
     else if (ctrl_br_i) result_r <= result_br_i;
   end
 endmodule
