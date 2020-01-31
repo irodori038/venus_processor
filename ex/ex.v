@@ -4,6 +4,8 @@
 `include "../a_stage/a_stage.v"
 `include "../ex/flag_register.v"
 `include "../ex/ex_pipeline_reg.v"
+`include "../ex/shift.v"
+`include "../ex/logic.v"
 
 module ex (
   input clk,
@@ -58,6 +60,28 @@ module ex (
     .overflow_flag_o(overflow_flag_o_adder0)
   );
 
+  wire [31:0] result_o_shift0;
+  wire cf_o_cf0;
+
+  shift shift0 (
+    .src(immf_i ? imm_value_i : rs_value_i),
+    .dst(rd_value_i),
+    .left(~opcode_i[0]),
+    .right(opcode_i[0]),
+    .math_shift(ctrl_shift_i & opcode_i[1]),
+    .result(result_o_shift0),
+    .cf(cf_o_cf0)
+  );
+
+  wire [31:0] result_o_logic0;
+
+  logic logic0 (
+    .src(rs_value_i),
+    .dst(rd_value_i),
+    .opcode(opcode_i[1:0]),
+    .result(result_o_logic0)
+  );
+
   wire [31:0] data_o_flag_register;
   wire [5:0] selected_flag;
 
@@ -107,15 +131,6 @@ module ex (
     result_o_branch0
   );
   
-  wire [31:0] selected_result;
-  assign selected_result = selector(
-    ctrl_inte_i,
-    ctrl_br_i,
-    ctrl_ld_i,
-    ctrl_st_i,
-    result_o_adder0,
-    result_o_branch0
-  );
 
   wire [31:0] data_o_ctrl_register;
   assign branch_en_o = data_o_ctrl_register[0];
@@ -165,8 +180,8 @@ module ex (
     .ctrl_br_i(ctrl_br_i),
     .result_addsub_i(result_o_adder0),
     .result_mul_i(32'h0),
-    .result_shift_i(32'h0),
-    .result_logic_i(32'h0),
+    .result_shift_i(result_o_shift0),
+    .result_logic_i(result_o_logic0),
     .result_ld_i(result_o_ls0),
     .result_br_i(result_o_branch0),
     .result_o(result_o_pipeline_stage)
