@@ -13,7 +13,7 @@ module ex_pipeline_reg (
   input [31:0] result_logic_i,
   input [31:0] result_ld_i,
   input [31:0] result_br_i,
-  output result_o
+  output [31:0] result_o
 );
 
   reg [31:0] result_r;

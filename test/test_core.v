@@ -92,6 +92,16 @@ module test_core();
       core0.ex0.ls0.data_mem.D,
       core0.ex0.ls0.data_mem.Q,
     );
+    $display("Branch: PC=%h, CC=%b. FL=%b, SRC=%h, ABS=%h, DST=%h, BR_EN=%b",
+      core0.ex0.branch0.pc_i,
+      core0.ex0.branch0.cc_i,
+      core0.ex0.branch0.flags_i,
+      core0.ex0.branch0.src_i,
+      core0.ex0.branch0.abs_i,
+      core0.ex0.branch0.dest_addr_o,
+      core0.ex0.branch0.branch_en_o
+    );
+    $display("Pipeline Register: OUT=%h", core0.ex0.pipeline_reg.result_o);
     $display("---------- Write back ----------");
     $display("wb_en_o: %h", core0.wb0.wb_en_o);
     $display("dest_reg_addr_o: %h", core0.wb0.dest_reg_addr_o);
