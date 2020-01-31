@@ -2,7 +2,6 @@
 `include "../ex/branch.v"
 `include "../ex/load_store.v"
 `include "../a_stage/a_stage.v"
-`include "../ex/flag_register.v"
 `include "../ex/ex_pipeline_reg.v"
 `include "../ex/shift.v"
 `include "../ex/logic.v"
